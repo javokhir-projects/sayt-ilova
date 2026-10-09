@@ -219,7 +219,8 @@ async function deviceLogin() {
   const out = stripAnsi(start.stdout + start.stderr);
   const url = out.match(/Open\s+(https:\/\/\S+)/)?.[1];
   const code = out.match(/Code:\s*(\S+)/)?.[1];
-  const requestId = out.match(/--resume\s+(\S+)/)?.[1];
+  // "--resume <uuid>, adding ..." — vergul ID'ga qo'shilib ketmasligi uchun faqat UUID olinadi
+  const requestId = out.match(/--resume\s+([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i)?.[1];
   if (start.code !== 0 || !url || !requestId) throw new Error("Expo'ga kirishni boshlab bo'lmadi. Internet aloqasini tekshiring.");
 
   job.login = { url, code, needsMatch: false, match: null };
@@ -279,6 +280,8 @@ async function deviceLogin() {
     }
     throw new Error("Expo'ga kirish uchun vaqt tugadi (15 daqiqa). «Ilovani yasash» ni qayta bosing.");
   } finally {
+    // bekor qilingan/tugagan so'rov fayli qolib ketmasin (eas-cli faqat muvaffaqiyatda o'chiradi)
+    fs.rmSync(path.join(os.homedir(), '.expo', 'device-login', `${requestId}.json`), { force: true });
     job.login = null;
     emit({ type: 'login', login: null });
   }

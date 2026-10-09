@@ -238,12 +238,13 @@
               <code id="login-code"></code>
             </div>
             <a class="btn btn-secondary btn-sm" id="login-link" target="_blank" rel="noopener">Kirish sahifasini ochish <svg class="i"><use href="#i-external" /></svg></a>
-            <form class="match-form" id="match-form" hidden>
-              <label for="match-input">Brauzerda raqam ko'rsatildi — shu raqamni kiriting:</label>
+            <form class="match-form" id="match-form">
+              <label for="match-input" id="match-label">Brauzerda 2 xonali raqam chiqsa, uni shu yerga kiriting:</label>
               <div class="match-row">
-                <input id="match-input" inputmode="numeric" maxlength="6" autocomplete="off" />
+                <input id="match-input" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="00" />
                 <button class="btn btn-primary btn-sm" type="submit">Yuborish</button>
               </div>
+              <small class="hint" id="match-status"></small>
               <small class="field-error" id="match-error"></small>
             </form>
           </div>

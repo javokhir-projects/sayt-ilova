@@ -327,10 +327,14 @@ function renderJob() {
   if (login) {
     $('login-link').href = login.url;
     $('login-code').textContent = login.code ?? '';
-    const showMatch = login.needsMatch && !login.match;
-    if (showMatch && $('match-form').hidden) setTimeout(() => $('match-input').focus(), 50);
-    $('match-form').hidden = !showMatch;
-    $('match-error').textContent = login.matchError ? "Raqam mos kelmadi — brauzerdagi raqamni qayta kiriting" : '';
+    const form = $('match-form');
+    const wasAttention = form.classList.contains('attention');
+    form.classList.toggle('attention', login.needsMatch && !login.match);
+    if (login.needsMatch && !login.match && !wasAttention) setTimeout(() => $('match-input').focus(), 50);
+    $('match-label').textContent = login.needsMatch
+      ? "Expo raqam so'rayapti — brauzerda ko'rsatilgan raqamni kiriting:"
+      : 'Brauzerda 2 xonali raqam chiqsa, uni shu yerga kiriting:';
+    $('match-status').textContent = login.match ? `Yuborildi: ${login.match} — tekshirilmoqda...` : '';
   }
 
   $('buildpage-notice').hidden = !(running && job.buildPage);
@@ -430,6 +434,7 @@ $('match-form').addEventListener('submit', async (e) => {
       body: JSON.stringify({ match: $('match-input').value }),
     });
     $('match-input').value = '';
+    $('match-error').textContent = '';
   } catch (err) {
     $('match-error').textContent = err.message;
   }

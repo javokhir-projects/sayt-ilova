@@ -1463,6 +1463,21 @@ p {
   color: var(--text);
 }
 
+.match-form.attention {
+  padding: 12px;
+  margin-top: 2px;
+  border-radius: 10px;
+  border: 1px solid var(--ink);
+  background: var(--surface);
+  animation: attention 1.2s ease-in-out 2;
+}
+
+@keyframes attention {
+  50% {
+    box-shadow: 0 0 0 5px var(--focus);
+  }
+}
+
 .match-row {
   display: flex;
   gap: 8px;

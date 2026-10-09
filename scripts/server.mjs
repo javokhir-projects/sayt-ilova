@@ -44,7 +44,8 @@ function runCommand(cmd, args, { onLine = () => {}, stdio, env, logStdout = true
     // Windows'da npx .cmd fayl — shell orqali, buyruq bitta qator qilib beriladi
     const child = isWin
       ? spawn([cmd, ...args].join(' '), [], { cwd: root, shell: true, env, stdio })
-      : spawn(cmd, args, { cwd: root, env, stdio });
+      : // alohida jarayon guruhi — bekor qilinganda ichidagi barcha jarayonlar bilan to'xtatiladi
+        spawn(cmd, args, { cwd: root, env, stdio, detached: stdio !== 'inherit' });
     job.child = child;
     let stdout = '';
     let stderr = '';
@@ -221,12 +222,17 @@ async function deviceLogin() {
   const requestId = out.match(/--resume\s+(\S+)/)?.[1];
   if (start.code !== 0 || !url || !requestId) throw new Error("Expo'ga kirishni boshlab bo'lmadi. Internet aloqasini tekshiring.");
 
-  job.login = { url, code, needsMatch: false, match: null, matchError: false };
+  job.login = { url, code, needsMatch: false, match: null };
   emit({ type: 'login', login: job.login });
   openBrowser(url);
 
   const deadline = Date.now() + 15 * 60 * 1000;
-  let transient = 0;
+  let lastState = '';
+  const note = (state, line) => {
+    // har bir so'rov emas, faqat holat o'zgarganda logga yoziladi
+    if (state !== lastState) log(line);
+    lastState = state;
+  };
   try {
     while (Date.now() < deadline) {
       await new Promise((r) => setTimeout(r, 4000));
@@ -236,24 +242,39 @@ async function deviceLogin() {
       if (usedMatch) args.push('--match', usedMatch);
       const res = await eas(args);
       checkCancelled();
-      const text = stripAnsi(res.stdout + res.stderr);
+      const text = stripAnsi(res.stdout + res.stderr).trim();
 
-      if (/Logged in as/i.test(text)) return;
-      // tarmoqdagi vaqtinchalik xato — bir necha marta qayta urinamiz
-      if (res.code !== 0 && !/Device login failed|pending|number shown/i.test(text) && ++transient < 3) continue;
-      if (res.code === 0) transient = 0;
-      if (/Device login failed/i.test(text) || (res.code !== 0 && !/pending|number shown/i.test(text))) {
-        // noto'g'ri raqam yuborilgan bo'lsa — qayta so'raymiz, aks holda kod eskirgan/rad etilgan
-        if (usedMatch) {
-          job.login = { ...job.login, match: null, matchError: true, needsMatch: true };
-          emit({ type: 'login', login: job.login });
-          continue;
-        }
-        throw new Error("Expo'ga kirish tasdiqlanmadi yoki kod eskirdi. «Ilovani yasash» ni qayta bosing.");
+      if (/Logged in as/i.test(text)) {
+        log(text.match(/Logged in as.*/i)[0]);
+        return;
       }
-      if (/number shown in their browser/i.test(text) && !job.login.needsMatch) {
-        job.login = { ...job.login, needsMatch: true };
-        emit({ type: 'login', login: job.login });
+
+      // Expo aniq rad etgan — so'rov yopilgan, qaytadan boshlash kerak
+      const failure = text.match(/Device login failed \((\w+)\)/)?.[1];
+      if (failure || /request not found|Start again with eas login/i.test(text)) {
+        log(text);
+        throw new Error(
+          failure === 'access_denied'
+            ? "Expo'da kirish rad etildi. «Ilovani yasash» ni qayta bosing."
+            : failure === 'expired_token'
+              ? "Tasdiqlash kodi eskirdi. «Ilovani yasash» ni qayta bosing."
+              : usedMatch
+                ? `Kiritilgan raqam (${usedMatch}) mos kelmadi. «Ilovani yasash» ni qayta bosing va brauzerdagi raqamni aniq kiriting.`
+                : "Expo'ga kirish tasdiqlanmadi. «Ilovani yasash» ni qayta bosing.",
+        );
+      }
+
+      if (/number shown in their browser/i.test(text)) {
+        note('match', usedMatch ? `Raqam yuborildi (${usedMatch}), Expo javobi kutilmoqda...` : "Expo tekshiruv raqamini so'rayapti — brauzerdagi raqamni sahifaga kiriting");
+        if (!job.login.needsMatch) {
+          job.login = { ...job.login, needsMatch: true };
+          emit({ type: 'login', login: job.login });
+        }
+      } else if (/pending|Retry after/i.test(text)) {
+        note('pending', 'Brauzerda tasdiqlash kutilmoqda...');
+      } else if (res.code !== 0) {
+        // tarmoq yoki Expo tomonidagi vaqtinchalik xato — so'rashda davom etamiz
+        note(`err:${text}`, `Expo javobi (qayta urinilmoqda): ${text.split(/\r?\n/).pop()}`);
       }
     }
     throw new Error("Expo'ga kirish uchun vaqt tugadi (15 daqiqa). «Ilovani yasash» ni qayta bosing.");
@@ -373,7 +394,13 @@ function cancelJob() {
   const child = job.child;
   if (child?.pid) {
     if (isWin) exec(`taskkill /pid ${child.pid} /T /F`, () => {});
-    else child.kill('SIGTERM');
+    else {
+      try {
+        process.kill(-child.pid, 'SIGTERM');
+      } catch {
+        child.kill('SIGTERM');
+      }
+    }
   }
 }
 
@@ -553,11 +580,18 @@ async function handle(req, res) {
         return sendJson(res, 400, { error: "So'rov noto'g'ri" });
       }
       const match = String(body.match ?? '').trim();
-      if (!/^\d{1,6}$/.test(match)) return sendJson(res, 400, { error: 'Faqat raqam kiriting' });
-      job.login = { ...job.login, match, matchError: false };
+      if (!/^\d{1,8}$/.test(match)) return sendJson(res, 400, { error: 'Faqat raqam kiriting' });
+      job.login = { ...job.login, match };
       emit({ type: 'login', login: job.login });
       return sendJson(res, 200, { ok: true });
     }
+
+    case 'POST /api/shutdown':
+      // yangi ishga tushirilgan Ilova Yasovchi eskisini yopadi (build ketayotgan bo'lsa — yo'q)
+      if (job.state === 'running') return sendJson(res, 409, { error: 'Build ketmoqda' });
+      sendJson(res, 200, { ok: true });
+      setTimeout(() => process.exit(0), 100);
+      return;
 
     case 'POST /api/cancel':
       cancelJob();
@@ -598,15 +632,46 @@ const server = http.createServer((req, res) => {
   });
 });
 
-server.on('error', (e) => {
-  if (e.code === 'EADDRINUSE' && port < 4400) {
-    port++;
-    server.listen(port, '127.0.0.1');
-  } else {
+const DEFAULT_PORT = port;
+let triedShutdown = false;
+
+server.on('error', async (e) => {
+  if (e.code !== 'EADDRINUSE' || port >= DEFAULT_PORT + 20) {
     console.error(e.message);
     process.exit(1);
   }
+  // Odatiy portda eski Ilova Yasovchi ochiq qolgan bo'lsa — uni yopib, o'rnini egallaymiz
+  if (port === DEFAULT_PORT && !triedShutdown) {
+    triedShutdown = true;
+    try {
+      const res = await fetch(`http://127.0.0.1:${port}/api/shutdown`, { method: 'POST', signal: AbortSignal.timeout(2000) });
+      if (res.ok) {
+        console.log("  Eski Ilova Yasovchi oynasi yopildi.");
+        await new Promise((r) => setTimeout(r, 600));
+        return server.listen(port, '127.0.0.1');
+      }
+    } catch {
+      // eski versiya yoki boshqa dastur — keyingi portga o'tamiz
+    }
+  }
+  port++;
+  server.listen(port, '127.0.0.1');
 });
+
+// Ilova yasovchi yopilganda ishlab turgan buyruq ham to'xtatiladi
+for (const sig of ['SIGINT', 'SIGTERM', 'SIGHUP']) {
+  process.on(sig, () => {
+    const pid = job.child?.pid;
+    if (pid && !isWin) {
+      try {
+        process.kill(-pid, 'SIGTERM');
+      } catch {
+        // jarayon allaqachon tugagan
+      }
+    }
+    process.exit(0);
+  });
+}
 
 server.listen(port, '127.0.0.1', () => {
   const url = `http://127.0.0.1:${port}`;

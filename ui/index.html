@@ -232,8 +232,20 @@
           <span class="notice-icon"><svg class="i"><use href="#i-user" /></svg></span>
           <div class="grow">
             <strong>Expo akkauntingizga kiring</strong>
-            <p>Brauzerda yangi oyna ochildi. Akkauntingizga kiring (bo'lmasa — o'sha yerda bepul ro'yxatdan o'ting) va shu sahifaga qayting.</p>
-            <a class="btn btn-secondary btn-sm" id="login-link" target="_blank" rel="noopener">Kirish oynasini ochish <svg class="i"><use href="#i-external" /></svg></a>
+            <p>Brauzerda Expo sahifasi ochildi. Akkauntingizga kiring — akkaunt bo'lmasa, o'sha yerda bepul ro'yxatdan o'ting — va kirishni tasdiqlang. Tasdiqlagach, jarayon o'zi davom etadi.</p>
+            <div class="login-code">
+              <span>Tasdiqlash kodi</span>
+              <code id="login-code"></code>
+            </div>
+            <a class="btn btn-secondary btn-sm" id="login-link" target="_blank" rel="noopener">Kirish sahifasini ochish <svg class="i"><use href="#i-external" /></svg></a>
+            <form class="match-form" id="match-form" hidden>
+              <label for="match-input">Brauzerda raqam ko'rsatildi — shu raqamni kiriting:</label>
+              <div class="match-row">
+                <input id="match-input" inputmode="numeric" maxlength="6" autocomplete="off" />
+                <button class="btn btn-primary btn-sm" type="submit">Yuborish</button>
+              </div>
+              <small class="field-error" id="match-error"></small>
+            </form>
           </div>
         </div>
 

@@ -1427,3 +1427,63 @@ p {
     display: none;
   }
 }
+
+/* ───────── Expo'ga kirish ───────── */
+.login-code {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--muted);
+}
+
+.login-code code {
+  font-family: ui-monospace, 'SF Mono', Consolas, monospace;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  color: var(--text);
+}
+
+.match-form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding-top: 4px;
+}
+
+.match-form label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text);
+}
+
+.match-row {
+  display: flex;
+  gap: 8px;
+}
+
+.match-row input {
+  width: 120px;
+  height: 34px;
+  padding: 0 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 9px;
+  background: var(--surface);
+  color: var(--text);
+  font: inherit;
+  font-size: 16px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  outline: none;
+}
+
+.match-row input:focus {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 4px var(--focus);
+}

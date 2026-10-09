@@ -173,7 +173,7 @@ function resetJob(platform) {
     startedAt: Date.now(),
     steps: Object.fromEntries(STEPS.map((s) => [s.id, { status: 'pending', detail: '' }])),
     logs: [],
-    loginUrl: null,
+    login: null,
     buildPage: null,
     result: null,
     error: null,
@@ -207,6 +207,62 @@ const checkCancelled = () => {
   if (job.cancelled) throw new Cancelled();
 };
 
+/**
+ * Expo'ga kirish. Terminal bo'lmaganda eas-cli brauzer rejimini rad etadi, shuning uchun
+ * qurilma kodi usuli ishlatiladi: havola + kod → foydalanuvchi brauzerda tasdiqlaydi → so'rab turamiz.
+ */
+async function deviceLogin() {
+  setStep('account', 'active', 'Brauzerda Expo akkauntingizga kiring');
+  const start = await eas(['login', '--device', '--non-interactive'], { onLine: log });
+  checkCancelled();
+  const out = stripAnsi(start.stdout + start.stderr);
+  const url = out.match(/Open\s+(https:\/\/\S+)/)?.[1];
+  const code = out.match(/Code:\s*(\S+)/)?.[1];
+  const requestId = out.match(/--resume\s+(\S+)/)?.[1];
+  if (start.code !== 0 || !url || !requestId) throw new Error("Expo'ga kirishni boshlab bo'lmadi. Internet aloqasini tekshiring.");
+
+  job.login = { url, code, needsMatch: false, match: null, matchError: false };
+  emit({ type: 'login', login: job.login });
+  openBrowser(url);
+
+  const deadline = Date.now() + 15 * 60 * 1000;
+  let transient = 0;
+  try {
+    while (Date.now() < deadline) {
+      await new Promise((r) => setTimeout(r, 4000));
+      checkCancelled();
+      const args = ['login', '--device', '--non-interactive', '--resume', requestId];
+      const usedMatch = job.login.match;
+      if (usedMatch) args.push('--match', usedMatch);
+      const res = await eas(args);
+      checkCancelled();
+      const text = stripAnsi(res.stdout + res.stderr);
+
+      if (/Logged in as/i.test(text)) return;
+      // tarmoqdagi vaqtinchalik xato — bir necha marta qayta urinamiz
+      if (res.code !== 0 && !/Device login failed|pending|number shown/i.test(text) && ++transient < 3) continue;
+      if (res.code === 0) transient = 0;
+      if (/Device login failed/i.test(text) || (res.code !== 0 && !/pending|number shown/i.test(text))) {
+        // noto'g'ri raqam yuborilgan bo'lsa — qayta so'raymiz, aks holda kod eskirgan/rad etilgan
+        if (usedMatch) {
+          job.login = { ...job.login, match: null, matchError: true, needsMatch: true };
+          emit({ type: 'login', login: job.login });
+          continue;
+        }
+        throw new Error("Expo'ga kirish tasdiqlanmadi yoki kod eskirdi. «Ilovani yasash» ni qayta bosing.");
+      }
+      if (/number shown in their browser/i.test(text) && !job.login.needsMatch) {
+        job.login = { ...job.login, needsMatch: true };
+        emit({ type: 'login', login: job.login });
+      }
+    }
+    throw new Error("Expo'ga kirish uchun vaqt tugadi (15 daqiqa). «Ilovani yasash» ni qayta bosing.");
+  } finally {
+    job.login = null;
+    emit({ type: 'login', login: null });
+  }
+}
+
 async function runBuild(settings) {
   const platform = settings.lastPlatform;
   resetJob(platform);
@@ -230,21 +286,7 @@ async function runBuild(settings) {
     let who = await eas(['whoami']);
     checkCancelled();
     if (who.code !== 0) {
-      setStep('account', 'active', 'Brauzerda Expo akkauntingizga kiring');
-      const login = await eas(['login', '--browser'], {
-        onLine: (l) => {
-          log(l);
-          const url = l.match(/visit this link to log in:\s*(\S+)/)?.[1];
-          if (url) {
-            job.loginUrl = url;
-            emit({ type: 'login', url });
-          }
-        },
-      });
-      checkCancelled();
-      job.loginUrl = null;
-      emit({ type: 'login', url: null });
-      if (login.code !== 0) throw new Error("Expo akkauntiga kirib bo'lmadi.");
+      await deviceLogin();
       who = await eas(['whoami']);
       if (who.code !== 0) throw new Error("Expo akkauntiga kirib bo'lmadi.");
     }
@@ -500,6 +542,21 @@ async function handle(req, res) {
       saveSettings(s);
       runBuild(s);
       return sendJson(res, 202, { ok: true });
+    }
+
+    case 'POST /api/login-match': {
+      if (!job.login) return sendJson(res, 409, { error: 'Kirish kutilmayapti' });
+      let body;
+      try {
+        body = JSON.parse((await readBody(req, 1024)).toString('utf8'));
+      } catch {
+        return sendJson(res, 400, { error: "So'rov noto'g'ri" });
+      }
+      const match = String(body.match ?? '').trim();
+      if (!/^\d{1,6}$/.test(match)) return sendJson(res, 400, { error: 'Faqat raqam kiriting' });
+      job.login = { ...job.login, match, matchError: false };
+      emit({ type: 'login', login: job.login });
+      return sendJson(res, 200, { ok: true });
     }
 
     case 'POST /api/cancel':

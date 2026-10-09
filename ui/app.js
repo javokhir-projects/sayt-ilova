@@ -322,8 +322,16 @@ function renderJob() {
     })
     .join('');
 
-  $('login-notice').hidden = !job.loginUrl;
-  if (job.loginUrl) $('login-link').href = job.loginUrl;
+  const login = job.login;
+  $('login-notice').hidden = !login;
+  if (login) {
+    $('login-link').href = login.url;
+    $('login-code').textContent = login.code ?? '';
+    const showMatch = login.needsMatch && !login.match;
+    if (showMatch && $('match-form').hidden) setTimeout(() => $('match-input').focus(), 50);
+    $('match-form').hidden = !showMatch;
+    $('match-error').textContent = login.matchError ? "Raqam mos kelmadi — brauzerdagi raqamni qayta kiriting" : '';
+  }
 
   $('buildpage-notice').hidden = !(running && job.buildPage);
   if (job.buildPage) $('buildpage-link').href = job.buildPage;
@@ -390,7 +398,7 @@ function connectEvents() {
         appendLog(ev.text);
         return;
       case 'login':
-        job.loginUrl = ev.url;
+        job.login = ev.login;
         break;
       case 'buildPage':
         job.buildPage = ev.url;
@@ -412,6 +420,20 @@ function connectEvents() {
     renderJob();
   };
 }
+
+$('match-form').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  try {
+    await api('/api/login-match', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ match: $('match-input').value }),
+    });
+    $('match-input').value = '';
+  } catch (err) {
+    $('match-error').textContent = err.message;
+  }
+});
 
 $('cancel-btn').addEventListener('click', async () => {
   if (confirm("Build to'xtatilsinmi?")) await api('/api/cancel', { method: 'POST' });

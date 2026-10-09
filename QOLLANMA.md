@@ -91,7 +91,7 @@ Birinchi marta kerakli kutubxonalar yuklanadi (1–3 daqiqa). Keyin **brauzerda 
 Sahifada jarayon bosqichma-bosqich ko'rinadi:
 
 1. **Frontend build** — loyihangiz sizning kompyuteringizda build qilinadi (kerak bo'lsa `npm install` ham).
-2. **Expo akkaunt** — birinchi marta **brauzerda Expo kirish sahifasi ochiladi**. Akkauntingizga kiring; akkaunt bo'lmasa, o'sha yerda bepul ro'yxatdan o'ting. Keyin Ilova Yasovchi sahifasiga qayting. (Kirish oynasi ochilmasa — sahifadagi **Kirish oynasini ochish** tugmasini bosing.)
+2. **Expo akkaunt** — birinchi marta **brauzerda Expo sahifasi ochiladi**, Ilova Yasovchi sahifasida esa **tasdiqlash kodi** ko'rinadi. Expo sahifasida akkauntingizga kiring (akkaunt bo'lmasa — o'sha yerda bepul ro'yxatdan o'ting), kod bir xil ekanini tekshirib **tasdiqlang**. Brauzerda raqam ko'rsatilsa — uni Ilova Yasovchi sahifasidagi maydonga kiriting. Tasdiqlagach, jarayon o'zi davom etadi. (Expo sahifasi ochilmasa — **Kirish sahifasini ochish** tugmasini bosing.)
 3. **Expo loyiha** — expo.dev da loyihangiz avtomatik yaratiladi.
 4. **Ilova yig'ish** — Expo serverida, **10–20 daqiqa**.
 
@@ -147,7 +147,8 @@ Boshqa frontend papkasini tanlang — sahifa *"Oldin ... ilovasi boshqa papkadan
 | `"npm run build" buyrug'i xato bilan tugadi` | Frontend loyihangizning o'zida xato bor. Uni o'z papkasida `npm run build` qilib tuzating. |
 | `Build natijasi (index.html) topilmadi` | `sayt-ilova\ilova.json` ga `"buildDir": "papka_nomi",` qatorini qo'shing. |
 | `Next.js loyihasi faqat statik eksport rejimida ishlaydi` | Yuqoridagi `output: 'export'` ni qo'shing. |
-| Expo kirish sahifasi ochilmadi | Ilova Yasovchi sahifasidagi **Kirish oynasini ochish** tugmasini bosing. |
+| Expo kirish sahifasi ochilmadi | Ilova Yasovchi sahifasidagi **Kirish sahifasini ochish** tugmasini bosing. |
+| `Expo'ga kirish tasdiqlanmadi yoki kod eskirdi` | Kod 15 daqiqa amal qiladi. **Ilovani yasash** ni qayta bosing va yangi kod bilan tasdiqlang. |
 | Build xato bilan tugadi | **Build sahifasi** havolasini oching — sababi qizil rangda ko'rsatiladi. **Batafsil jarayon (log)** da ham ko'rinadi. |
 | Ilovada oq ekran | Frontend brauzerda ishlashini tekshiring: frontend papkasida `npm run build`, keyin `npx serve dist` va brauzerda oching. |
 | Ma'lumotlar yuklanmayapti (API) | Frontend backendga to'liq `https://...` manzil bilan murojaat qilishi va backend CORS'da ilova manziliga ruxsat berishi kerak. Bu manzil logda: *"Ilova ichidagi manzil (backend CORS uchun)"*. |

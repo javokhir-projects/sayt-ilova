@@ -11,7 +11,7 @@ npm install
 npm start               # yoki Windows: ilova-yasash.bat, macOS: ilova-yasash.command
 ```
 
-`npm start` (`scripts/server.mjs`) `127.0.0.1:4321` da lokal veb-interfeysni (`ui/`) ishga tushiradi va brauzerni ochadi. Interfeysda: papka tanlash oynasi (server papkalarni ko'rsatadi, frontend loyihalarni aniqlaydi), ikonka yuklash (PNG), nom/rang/versiya/paket, platforma (APK / AAB / iOS). «Ilovani yasash» → frontend build → Expo akkaunt (kerak bo'lsa `eas login --browser`) → `eas init` → `eas build`; bosqichlar va loglar SSE orqali sahifaga uzatiladi, oxirida QR kod va yuklab olish havolasi.
+`npm start` (`scripts/server.mjs`) `127.0.0.1:4321` da lokal veb-interfeysni (`ui/`) ishga tushiradi va brauzerni ochadi. Interfeysda: papka tanlash oynasi (server papkalarni ko'rsatadi, frontend loyihalarni aniqlaydi), ikonka yuklash (PNG), nom/rang/versiya/paket, platforma (APK / AAB / iOS). «Ilovani yasash» → frontend build → Expo akkaunt (kerak bo'lsa qurilma kodi orqali kirish: `eas login --device --non-interactive` + `--resume`, chunki terminalsiz `--browser` rad etiladi) → `eas init` → `eas build`; bosqichlar va loglar SSE orqali sahifaga uzatiladi, oxirida QR kod va yuklab olish havolasi.
 
 Sozlamalar `ilova.json` ga saqlanadi (`app.config.ts` ham shu fayldan o'qiydi). Qo'shimcha kalitlar: `buildCommand`, `buildDir`, `splash`.
 

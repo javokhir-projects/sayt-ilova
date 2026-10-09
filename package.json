@@ -3,20 +3,32 @@
   "version": "1.0.0",
   "main": "index.ts",
   "dependencies": {
+    "@dr.pogodin/react-native-fs": "^2.40.3",
+    "@dr.pogodin/react-native-static-server": "^0.28.0",
     "expo": "~57.0.27",
+    "expo-build-properties": "~57.0.22",
+    "expo-constants": "~57.0.21",
+    "expo-splash-screen": "~57.0.9",
     "expo-status-bar": "~57.0.1",
     "react": "19.2.3",
-    "react-native": "0.86.3"
+    "react-native": "0.86.3",
+    "react-native-safe-area-context": "~5.7.0",
+    "react-native-webview": "13.16.1"
   },
   "devDependencies": {
+    "@types/node": "^26.6.4",
     "@types/react": "~19.2.2",
+    "qrcode": "^1.5.4",
     "typescript": "~6.0.3"
   },
   "scripts": {
-    "start": "expo start",
-    "android": "expo start --android",
-    "ios": "expo start --ios",
-    "web": "expo start --web"
+    "start": "node scripts/server.mjs",
+    "android": "expo run:android",
+    "ios": "expo run:ios",
+    "web": "expo start --web",
+    "build:android": "node scripts/build-android.mjs",
+    "prepare-web": "node scripts/prepare-web.mjs",
+    "dev": "expo start"
   },
   "private": true
 }

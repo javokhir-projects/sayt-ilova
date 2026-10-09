@@ -39,3 +39,14 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# build natijalari
+dist/
+
+# frontend build natijasi (prepare-web yaratadi)
+webroot/
+webroot.json
+
+# npm start javoblari va nusxalangan ikonka (har bir foydalanuvchida o'zi)
+ilova.json
+assets/app-icon.png

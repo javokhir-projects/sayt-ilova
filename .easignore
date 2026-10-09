@@ -1,0 +1,10 @@
+# EAS serveriga yuklanmaydigan fayllar
+node_modules/
+android/
+ios/
+dist/
+.expo/
+.git/
+.claude/
+*.apk
+*.aab

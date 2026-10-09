@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="uz" data-theme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ilova Yasovchi</title>
+    <script>
+      // Mavzu sahifa chizilishidan oldin qo'llanadi (standart — kun rejimi)
+      try {
+        document.documentElement.dataset.theme = localStorage.getItem('theme') === 'dark' ? 'dark' : 'light';
+      } catch {}
+    </script>
+    <link rel="icon" href="/logo.svg" type="image/svg+xml" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/style.css" />
+  </head>
+  <body>
+    <!-- Belgilar (lucide uslubida) -->
+    <svg width="0" height="0" style="position: absolute" aria-hidden="true">
+      <defs>
+        <symbol id="i-folder" viewBox="0 0 24 24"><path d="M4 20h16a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.93a2 2 0 0 1-1.66-.9l-.82-1.2A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13c0 1.1.9 2 2 2Z" /></symbol>
+        <symbol id="i-box" viewBox="0 0 24 24"><path d="M11 21.73a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73z" /><path d="M12 22V12" /><path d="m3.3 7 8.7 5 8.7-5" /></symbol>
+        <symbol id="i-upload" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m17 8-5-5-5 5" /><path d="M12 3v12" /></symbol>
+        <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4" /><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41" /></symbol>
+        <symbol id="i-moon" viewBox="0 0 24 24"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z" /></symbol>
+        <symbol id="i-phone" viewBox="0 0 24 24"><rect width="14" height="20" x="5" y="2" rx="2" /><path d="M12 18h.01" /></symbol>
+        <symbol id="i-play" viewBox="0 0 24 24"><path d="M6 3.5v17a1 1 0 0 0 1.5.86l14-8.5a1 1 0 0 0 0-1.72l-14-8.5A1 1 0 0 0 6 3.5Z" /></symbol>
+        <symbol id="i-apple" viewBox="0 0 24 24"><path d="M12 20.94c1.5 0 2.75 1.06 4 1.06 3 0 6-8 6-12.22A4.91 4.91 0 0 0 17 5c-2.22 0-4 1.44-5 2-1-.56-2.78-2-5-2a4.9 4.9 0 0 0-5 4.78C2 14 5 22 8 22c1.25 0 2.5-1.06 4-1.06Z" /><path d="M10 2c1 .5 2 2 2 5" /></symbol>
+        <symbol id="i-check" viewBox="0 0 24 24"><path d="M20 6 9 17l-5-5" /></symbol>
+        <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18M6 6l12 12" /></symbol>
+        <symbol id="i-up" viewBox="0 0 24 24"><path d="m5 12 7-7 7 7M12 19V5" /></symbol>
+        <symbol id="i-chevron" viewBox="0 0 24 24"><path d="m9 18 6-6-6-6" /></symbol>
+        <symbol id="i-monitor" viewBox="0 0 24 24"><rect width="20" height="14" x="2" y="3" rx="2" /><path d="M8 21h8M12 17v4" /></symbol>
+        <symbol id="i-file" viewBox="0 0 24 24"><path d="M15 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z" /><path d="M14 2v4a2 2 0 0 0 2 2h4" /></symbol>
+        <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><path d="m7 10 5 5 5-5" /><path d="M12 15V3" /></symbol>
+        <symbol id="i-home" viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><path d="M9 22V12h6v10" /></symbol>
+        <symbol id="i-drive" viewBox="0 0 24 24"><path d="M22 12H2" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /><path d="M6 16h.01M10 16h.01" /></symbol>
+        <symbol id="i-external" viewBox="0 0 24 24"><path d="M15 3h6v6M10 14 21 3M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6" /></symbol>
+        <symbol id="i-back" viewBox="0 0 24 24"><path d="m12 19-7-7 7-7M19 12H5" /></symbol>
+        <symbol id="i-alert" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" /><path d="M12 8v4M12 16h.01" /></symbol>
+        <symbol id="i-terminal" viewBox="0 0 24 24"><path d="m4 17 6-6-6-6M12 19h8" /></symbol>
+        <symbol id="i-user" viewBox="0 0 24 24"><circle cx="12" cy="8" r="5" /><path d="M20 21a8 8 0 0 0-16 0" /></symbol>
+        <symbol id="i-cloud" viewBox="0 0 24 24"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z" /></symbol>
+        <symbol id="i-hammer" viewBox="0 0 24 24"><path d="m15 12-8.37 8.37a2.12 2.12 0 1 1-3-3L12 9" /><path d="M17.64 15 22 10.64M20.91 11.7l-1.25-1.25c-.6-.6-.93-1.4-.93-2.25v-.86L16.01 4.6a5.56 5.56 0 0 0-3.94-1.64H9l.92.82A6.18 6.18 0 0 1 12 8.4v1.56l2 2h2.47l2.26 1.91" /></symbol>
+      </defs>
+    </svg>
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark"><svg class="i"><use href="#i-phone" /></svg></span>
+        <span>Ilova Yasovchi</span>
+      </div>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-label="Kun / tun rejimi" title="Kun / tun rejimi">
+        <svg class="i only-light"><use href="#i-moon" /></svg>
+        <svg class="i only-dark"><use href="#i-sun" /></svg>
+      </button>
+    </header>
+
+    <!-- ───────────── Forma ───────────── -->
+    <main id="form-view" class="page" hidden>
+      <div class="hero">
+        <h1>Saytingizni mobil ilovaga aylantiring</h1>
+        <p>Frontend papkasini tanlang, ikonka va nom bering — qolganini biz qilamiz.</p>
+      </div>
+
+      <div class="layout">
+        <form id="form" class="panel" novalidate>
+          <!-- 01 -->
+          <section class="section">
+            <header class="section-head">
+              <span class="section-num">01</span>
+              <div>
+                <h2>Frontend loyiha</h2>
+                <p>Ilovaga aylantiriladigan sayt papkasi</p>
+              </div>
+            </header>
+
+            <div class="folder-picked" id="folder-picked">
+              <span class="tile-icon"><svg class="i"><use href="#i-folder" /></svg></span>
+              <div class="grow">
+                <div class="folder-path" id="source-path">Papka tanlanmagan</div>
+                <div class="folder-type" id="source-type"></div>
+              </div>
+              <button type="button" class="btn btn-secondary" id="pick-folder">Papkani tanlash</button>
+            </div>
+            <p class="field-error" data-error="source"></p>
+
+            <div class="choice" id="newapp-choice" hidden>
+              <p id="newapp-text"></p>
+              <div class="segmented">
+                <button type="button" data-newapp="false">O'sha ilovani yangilash</button>
+                <button type="button" data-newapp="true">Yangi alohida ilova</button>
+              </div>
+            </div>
+          </section>
+
+          <!-- 02 -->
+          <section class="section">
+            <header class="section-head">
+              <span class="section-num">02</span>
+              <div>
+                <h2>Ilova ma'lumotlari</h2>
+                <p>Telefonda qanday ko'rinishi</p>
+              </div>
+            </header>
+
+            <div class="icon-row">
+              <label class="dropzone" id="dropzone" title="Ikonkani yuklash">
+                <input type="file" id="icon-input" accept="image/png" hidden />
+                <img id="icon-preview" alt="" />
+                <span class="dropzone-overlay"><svg class="i"><use href="#i-upload" /></svg></span>
+              </label>
+              <div class="icon-info">
+                <strong>Ikonka</strong>
+                <p>PNG, kvadrat, 1024×1024. Rasmni shu yerga sudrab tashlang yoki bosing.</p>
+                <p class="warn" id="icon-warning" hidden></p>
+                <button type="button" class="link-btn" id="icon-reset" hidden>Standart ikonkaga qaytarish</button>
+              </div>
+            </div>
+
+            <label class="field">
+              <span class="label">Ilova nomi</span>
+              <input id="name" maxlength="40" placeholder="Masalan: Qahva Uyi" autocomplete="off" />
+              <small class="field-error" data-error="name"></small>
+            </label>
+
+            <div class="field-row">
+              <label class="field">
+                <span class="label">Fon rangi</span>
+                <span class="color-input">
+                  <input type="color" id="color" />
+                  <code id="color-value"></code>
+                </span>
+              </label>
+              <label class="field">
+                <span class="label">Versiya</span>
+                <input id="version" placeholder="1.0.0" autocomplete="off" />
+                <small class="hint">Ilovani yangilaganda oshiring</small>
+                <small class="field-error" data-error="version"></small>
+              </label>
+            </div>
+
+            <details class="advanced" id="advanced">
+              <summary><svg class="i"><use href="#i-chevron" /></svg> Ilova identifikatori</summary>
+              <label class="field">
+                <span class="label">Paket nomi</span>
+                <input id="package" placeholder="uz.kompaniya.ilova" autocomplete="off" spellcheck="false" />
+                <small class="hint" id="package-hint"></small>
+                <small class="field-error" data-error="package"></small>
+              </label>
+            </details>
+          </section>
+
+          <!-- 03 -->
+          <section class="section">
+            <header class="section-head">
+              <span class="section-num">03</span>
+              <div>
+                <h2>Platforma</h2>
+                <p>Ilova qayerga o'rnatiladi</p>
+              </div>
+            </header>
+            <div class="platforms">
+              <label class="platform">
+                <input type="radio" name="platform" value="apk" />
+                <span class="platform-icon"><svg class="i"><use href="#i-phone" /></svg></span>
+                <strong>Android APK</strong>
+                <small>Telefonga to'g'ridan-to'g'ri o'rnatish</small>
+                <span class="radio-dot"></span>
+              </label>
+              <label class="platform">
+                <input type="radio" name="platform" value="aab" />
+                <span class="platform-icon"><svg class="i"><use href="#i-play" /></svg></span>
+                <strong>Play Market</strong>
+                <small>Google Play uchun AAB fayl</small>
+                <span class="radio-dot"></span>
+              </label>
+              <label class="platform">
+                <input type="radio" name="platform" value="ios" />
+                <span class="platform-icon"><svg class="i"><use href="#i-apple" /></svg></span>
+                <strong>iPhone</strong>
+                <small>Apple Developer akkaunt kerak</small>
+                <span class="radio-dot"></span>
+              </label>
+            </div>
+            <p class="field-error" data-error="platform"></p>
+          </section>
+        </form>
+
+        <aside class="side">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <div class="phone-status"><span>9:41</span><span class="bars"><i></i><i></i><i></i></span></div>
+              <div class="home-grid">
+                <div class="app ghost"><b></b><span></span></div>
+                <div class="app ghost"><b></b><span></span></div>
+                <div class="app mine">
+                  <img id="phone-icon" alt="" />
+                  <span id="phone-name">Ilova</span>
+                </div>
+                <div class="app ghost"><b></b><span></span></div>
+                <div class="app ghost"><b></b><span></span></div>
+                <div class="app ghost"><b></b><span></span></div>
+              </div>
+              <div class="dock"><b></b><b></b><b></b><b></b></div>
+            </div>
+          </div>
+          <button class="btn btn-primary btn-big" id="build-btn" form="form" type="submit">Ilovani yasash</button>
+          <p class="side-note">Build Expo serverida — odatda 10–20 daqiqa</p>
+        </aside>
+      </div>
+    </main>
+
+    <!-- ───────────── Build jarayoni ───────────── -->
+    <main id="build-view" class="page build" hidden>
+      <section class="panel build-panel">
+        <div class="build-head">
+          <img id="build-icon" alt="" class="build-app-icon" />
+          <div class="grow">
+            <h2 id="build-title">Ilova yasalmoqda</h2>
+            <p id="build-sub"></p>
+          </div>
+          <span class="timer" id="timer"></span>
+        </div>
+
+        <ol class="progress" id="progress"></ol>
+
+        <div class="notice" id="login-notice" hidden>
+          <span class="notice-icon"><svg class="i"><use href="#i-user" /></svg></span>
+          <div class="grow">
+            <strong>Expo akkauntingizga kiring</strong>
+            <p>Brauzerda yangi oyna ochildi. Akkauntingizga kiring (bo'lmasa — o'sha yerda bepul ro'yxatdan o'ting) va shu sahifaga qayting.</p>
+            <a class="btn btn-secondary btn-sm" id="login-link" target="_blank" rel="noopener">Kirish oynasini ochish <svg class="i"><use href="#i-external" /></svg></a>
+          </div>
+        </div>
+
+        <div class="notice" id="buildpage-notice" hidden>
+          <span class="notice-icon"><svg class="i"><use href="#i-cloud" /></svg></span>
+          <div class="grow">
+            <p>Build Expo serverida ketmoqda. Bu sahifani yopsangiz ham to'xtamaydi.</p>
+            <a class="link-btn" id="buildpage-link" target="_blank" rel="noopener">Build sahifasini ochish <svg class="i"><use href="#i-external" /></svg></a>
+          </div>
+        </div>
+
+        <div class="result" id="result" hidden>
+          <div class="qr" id="qr"></div>
+          <div class="result-text">
+            <span class="badge-ok"><svg class="i"><use href="#i-check" /></svg> Tayyor</span>
+            <h3 id="result-title">Ilovangiz tayyor</h3>
+            <p id="result-help"></p>
+            <div class="result-actions">
+              <a class="btn btn-primary" id="download-link" target="_blank" rel="noopener"><svg class="i"><use href="#i-download" /></svg> <span id="download-text">Yuklab olish</span></a>
+              <a class="btn btn-secondary" id="result-page" target="_blank" rel="noopener">Build sahifasi <svg class="i"><use href="#i-external" /></svg></a>
+            </div>
+          </div>
+        </div>
+
+        <div class="error-box" id="error-box" hidden></div>
+
+        <details class="logs" id="logs-box">
+          <summary><svg class="i"><use href="#i-terminal" /></svg> Batafsil jarayon</summary>
+          <pre id="logs"></pre>
+        </details>
+
+        <div class="build-actions">
+          <button class="btn btn-ghost" id="cancel-btn">Bekor qilish</button>
+          <button class="btn btn-secondary" id="back-btn" hidden><svg class="i"><use href="#i-back" /></svg> Sozlamalarga qaytish</button>
+        </div>
+      </section>
+    </main>
+
+    <!-- ───────────── Papka tanlash oynasi ───────────── -->
+    <dialog id="folder-dialog" class="dialog">
+      <div class="dialog-head">
+        <h2>Papkani tanlang</h2>
+        <button class="icon-btn" id="folder-close" aria-label="Yopish"><svg class="i"><use href="#i-x" /></svg></button>
+      </div>
+      <div class="dialog-body">
+        <nav class="shortcuts" id="shortcuts"></nav>
+        <div class="browser">
+          <div class="crumbs" id="crumbs"></div>
+          <ul class="dirs" id="dirs"></ul>
+        </div>
+      </div>
+      <div class="dialog-foot">
+        <div class="grow">
+          <div class="dialog-path" id="dialog-path"></div>
+          <div class="folder-type" id="dialog-type"></div>
+        </div>
+        <button class="btn btn-primary" id="folder-select" disabled>Shu papkani tanlash</button>
+      </div>
+    </dialog>
+
+    <script src="/app.js" type="module"></script>
+  </body>
+</html>
